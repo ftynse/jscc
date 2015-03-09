@@ -1,0 +1,18 @@
+Javascript interface to iscc (isl + barvinok).
+
+Library prerequisites:
+d3.js        -- http://d3js.org
+c3.js        -- http://c3js.org
+MathJAX      -- http://mathjax.org
+highlight.js -- http://highlightjs.org
+iscc.js should be compiled from respective libraries (isl, barvinok, polylib,
+gmp) by emscripten compiler.
+
+Disclaimer:
+This software is a research prototype.  It is known to be incomplet and
+incorrekt, proceed at your own risk.
+
+Copyright (c) 2015 Inria 
+Written by Oleksandr Zinenko <zinenko@lri.fr>
+Original iscc and libraries are written by 
+Sven Verdoolaege <skimo-isl@kotnet.org> and isl contributors.
