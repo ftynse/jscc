@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+    <link href="c3.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+
+    <link rel="stylesheet" href="main.css">
+
+    <title> jscc repl | interface to isl and barvinok in javascript </title>
+  </head>
+  <body>
+    <div class="page-content">
+    <div class="wrapper">
+    <h1> jscc : polyhedral compilation in the browser </h1>
+    <p> Accepts <a href="http://barvinok.gforge.inria.fr/barvinok.pdf" target="_blank">iscc</a> commands and <em>plot</em> for 2D (union) sets.</p>
+    <div id="jscc">
+      <input type="text" id="current_input" onkeydown="enterButtonrunner()"></input>
+      <button type="button" id="runbutton" onclick="buttonrunner()">run</button>
+    </div>
+    <div id="jscccode">
+      <a href="#" onclick="getcode()">Get iscc code of this example</a></br>
+    </div>
+    </div>
+    </div>
+
+    <script type="text/javascript" src="jscc_iface.js"></script>
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="c3.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript">
+      function getcode() {
+        var existingCodeElement = document.getElementById('jscccodeelement');
+        if (existingCodeElement !== null) {
+          existingCodeElement.innerHTML = jsccGenerateIscc();
+          return;
+        }
+        var parentElement = document.getElementById('jscccode');
+        var codeElement = document.createElement('code');
+        codeElement.setAttribute('class', 'hljs');
+        var preElement = document.createElement('pre');
+        preElement.setAttribute('class', 'hljs');
+        codeElement.id = "jscccodeelement";
+        preElement.appendChild(codeElement);
+        parentElement.appendChild(preElement);
+        codeElement.innerHTML = jsccGenerateIscc();
+      }
+    </script>
+  </body>
+</html>

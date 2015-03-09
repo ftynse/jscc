@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML"></script>
+    <link href="c3.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+
+    <link rel="stylesheet" href="main.css" type="text/css">
+
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="c3.min.js" charset="utf-8"></script>
+
+    <title> jscc tutorial </title>
+  </head>
+
+  <body>
+    <div class="page-content">
+      <div class="wrapper">
+        <h1> jscc : preloaded file mode </h1>
+        <div id="jscc">
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="jscc_iface.js"></script>
+    <script type="text/javascript">
+      var str = decodeURI(document.location.search + document.location.hash);
+      str = str.substr(1, str.length - 1);
+      jsccParseString(str, document.getElementById('jscc'));
+    </script>
+  </body>
+</html>
