@@ -152,8 +152,12 @@ function jsccParseString(string, element) {
         j--;
       }
     }
-    if (commands.length == 0)
+    if (commands.length == 0) {
+      if (commentPart != null) {
+        jsccDeferredCommands.push(commentPart);
+      }
       continue;
+    }
     // Add all commands but the last
     for (var j = 0; j < commands.length - 1; j++) {
       jsccDeferredCommands.push(commands[j]);

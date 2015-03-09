@@ -28,8 +28,12 @@
     <script type="text/javascript" src="jscc_iface.js"></script>
     <script type="text/javascript">
       var str = decodeURI(document.location.search + document.location.hash);
-      str = str.substr(1, str.length - 1);
-      jsccParseString(str, document.getElementById('jscc'));
+      if (str.length > 0) {
+        if (str[0] == '?') {
+          str = str.substr(1, str.length - 1);
+        }
+        jsccParseString(str, document.getElementById('jscc'));
+      }
     </script>
   </body>
 </html>
