@@ -48,6 +48,38 @@
         parentElement.appendChild(preElement);
         codeElement.innerHTML = jsccGenerateIscc();
       }
+
+      function handleDragOver(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        evt.dataTransfer.dropEffect = 'copy';
+      }
+
+      function handleFileDrop(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+
+        jsccRemoveInputField();
+        
+        var files = evt.dataTransfer.files;
+        if (files.length != 1) {
+          alert('Expecting exactly 1 file');
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function() {
+          jsccParseString(reader.result, document.getElementById('jscc'));
+        }
+        reader.onerror = function() {
+          alert('Could not read the file');
+        }
+        reader.readAsText(files[0]);
+      }
+      
+      document.getElementById('current_input').addEventListener('drop',
+          handleFileDrop, false);
+      document.getElementById('current_input').addEventListener('dragover',
+          handleDragOver, false);
     </script>
   </body>
 </html>
