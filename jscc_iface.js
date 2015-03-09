@@ -134,10 +134,45 @@ function jsccParseString(string, element) {
   runbuttonElement.innerHTML='Run';
   var lines = string.split('\n');
   for (var i = 0; i < lines.length; i++) {
-    var commands = lines[i].split(';');
+    // Detach inline comments.
+    var inlineCommentStart = lines[i].indexOf('#');
+    if (inlineCommentStart == -1) {
+      var commandPart = lines[i];
+      var commentPart = null;
+    } else {
+      var commandPart = lines[i].substr(0, inlineCommentStart);
+      var commentPart = lines[i].substr(inlineCommentStart, lines[i].length - inlineCommentStart);
+    }
+
+    // Remove empty commands
+    var commands = commandPart.split(';');
     for (var j = 0; j < commands.length; j++) {
-      if (commands[j].match(/^[;\s]*$/) == null) {
-        jsccDeferredCommands.push(commands[j]);
+      if (commands[j].match(/^[;\s]*$/) != null) {
+        commands.splice(j, 1);
+        j--;
+      }
+    }
+    if (commands.length == 0)
+      continue;
+    // Add all commands but the last
+    for (var j = 0; j < commands.length - 1; j++) {
+      jsccDeferredCommands.push(commands[j]);
+    }
+    // If last command has colon, add it, otherwise prepend it to the next line
+    var lastCommand = commands[commands.length - 1];
+    if (commandPart.match(/;\s*$/) != null) {
+      jsccDeferredCommands.push(lastCommand);
+      if (commentPart != null) {
+        jsccDeferredCommands.push(commentPart);
+      }
+    } else {
+      if (commentPart != null) {
+        jsccDeferredCommands.push(commentPart);
+      }
+      if (i != lines.length - 1) {
+        lines[i + 1] = lastCommand + lines[i + 1];
+      } else {
+        jsccDeferredCommands.push("$$$ file corrupted $$$"); // WTF method to generate error
       }
     }
   }
