@@ -44,7 +44,8 @@ var jsccWorker = new Worker("jscc_worker.js")
 var jsccDeferredCommands = [];
 var jsccExecutedCommands = [];
 
-function enterButtonrunner() {
+function enterButtonrunner(e) {
+  event = e || window.event;
   if (event.keyCode == 13) {
     buttonrunner();
   }
