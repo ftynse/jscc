@@ -5,6 +5,39 @@ if (typeof String.prototype.startsWith != 'function') {
   };
 }
 
+function escapeRegExp(string) {
+      return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+if (typeof String.prototype.replaceAll != 'function') {
+  String.prototype.replaceAll = function(str, replacement) {
+    if (str instanceof RegExp) {
+      if (!str.global)
+        str = new RegExp(str.toString, 'g')
+      return this.replace(str, replacement)
+    } else {
+      regexp = new RegExp(escapeRegExp(str), 'g');
+      return this.replace(regexp, replacement);
+    }
+  }
+}
+
+function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
+
+
 var runbuttonElement = document.getElementById("runbutton");
 var jsccElement = document.getElementById("jscc");
 var jsccWorker = new Worker("jscc_worker.js")
@@ -27,6 +60,30 @@ function jsccAddInputField() {
   input.focus();
 }
 
+function saveSvg(visualization) {
+  var savableSvgNode = visualization.getElementsByTagName('svg')[0];
+
+  function responseReady() {
+    var savableSvg = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="c3">'
+    savableSvg += '<style type="text/css"> <![CDATA['
+    savableSvg += xmlhttp.responseText;
+    savableSvg += ']]></style>';
+    savableSvg += savableSvgNode.innerHTML;
+    savableSvg += '</svg>';
+
+    savableSvg = savableSvg.replaceAll(location.href, '#');
+
+//string = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(savableSvg);
+    download('jscc.svg', savableSvg);
+  }
+
+  // Get styles
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.open('GET', 'c3.css', true);
+  xmlhttp.addEventListener('load', responseReady)
+  xmlhttp.send();
+}
+
 jsccWorker.onmessage = function(msg) {
   var output = document.createElement("div");
   if (typeof msg.data !== "string") {
@@ -45,6 +102,7 @@ jsccWorker.onmessage = function(msg) {
     output.style.fontFamily = "monospace";
   } else if (msg.data.startsWith("!plot2! ")) {
     var rawdata = JSON.parse(msg.data.replace(/!plot2! /,""));
+    var wrapper = document.createElement('div')
     var visualization = document.createElement("div");
     visualization.class = 'c3';
     output.appendChild(visualization);
@@ -61,6 +119,14 @@ jsccWorker.onmessage = function(msg) {
         type: 'scatter'
       }
     });
+
+    // Save button
+    var saveLink = document.createElement('a');
+    saveLink.innerHTML = 'Save SVG';
+    saveLink.setAttribute('href', '#');
+    saveLink.onclick = function() { saveSvg(visualization); };
+    output.appendChild(saveLink);
+
 
   } else if (msg.data.startsWith("!code! ")) {
     var code = msg.data.replace(/!code! /,"");
